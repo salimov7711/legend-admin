@@ -26,6 +26,7 @@ html {
   border-radius: 50%;
   block-size: 55px;
   inline-size: 55px;
+  margin-right: 10px;
 }
 
 .loading .effect-1,

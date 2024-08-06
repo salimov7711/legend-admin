@@ -86,14 +86,13 @@ const hideTitleAndIcon = configStore.isVerticalNavMini(isHovered)
           to="/"
           class="app-logo app-title-wrapper"
         >
-          <VNodeRenderer :nodes="layoutConfig.app.logo" />
-
+          <!-- <VNodeRenderer :nodes="layoutConfig.app.logo" /> -->
+              <img src="/images/svg/Legend_blue.svg" alt="#" class="img_logo">
           <Transition name="vertical-nav-app-title">
             <h1
               v-show="!hideTitleAndIcon"
               class="app-logo-title"
             >
-              {{ layoutConfig.app.title }}
             </h1>
           </Transition>
         </RouterLink>
@@ -161,7 +160,15 @@ const hideTitleAndIcon = configStore.isVerticalNavMini(isHovered)
     line-height: 1.5rem;
     text-transform: capitalize;
   }
+
+  .img_logo {
+    width: 100px;
+  
+    // margin-left: 10px;
 }
+}
+
+
 </style>
 
 <style lang="scss">
