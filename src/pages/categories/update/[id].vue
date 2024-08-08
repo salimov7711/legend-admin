@@ -88,42 +88,31 @@ onMounted(() => {
 }
 
 .rounded-input:focus {
-  border-color: #66afe9;
-}
-.rounded-button:disabled {
-  background-color: #66afe9;
-  cursor: not-allowed;
+    border-color: #7367f0;;
 }
 .rounded-button {
-  padding: 10px 20px;
-  border: none;
-  border-radius: 25px;
-  background-color: #66afe9;
-  color: white;
-  font-size: 16px;
-  cursor: pointer;
-  transition: background-color 0.3s;
-  position: relative;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 25px;
+    color: white;
+    font-size: 16px;
+    cursor: pointer;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    background-color: #7367f0; /* Blue color */
+
+    transition: background-color 0.3s;
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
 }
 .rounded-button:hover {
-  background-color: #558acb;
+    background-color: #695cf3; /* Darker blue color */
+}
+.rounded-button:focus {
+    border-color: #66afe9;
+   box-shadow: 0 0 0 4px rgba(102, 175, 233, 0.5); /* Blue ring */
 }
 
-.loader {
-  border: 2px solid #f3f3f3;
-  border-top: 2px solid #3498db;
-  border-radius: 50%;
-  width: 12px;
-  height: 12px;
-  animation: spin 1s linear infinite;
-  margin-right: 10px;
-}
-@keyframes spin {
-  0% {
-    transform: rotate(0deg);
-  }
-}
+
 </style>

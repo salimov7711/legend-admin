@@ -1,7 +1,8 @@
 <template>
     <div>
         <div class="page-header">
-            <h1>Все категории</h1>
+            <h1>Все отчеты</h1>
+
             <RouterLink :to="`categories/create`">
                 <button class="add-button">
                     <svg
@@ -18,45 +19,38 @@
                             d="M12 4v16m8-8H4"
                         />
                     </svg>
-                    <span class="button-text">Создать категорию</span>
+                    <span class="button-text">Создать отчет</span>
                 </button>
             </RouterLink>
         </div>
 
         <div class="wrapper">
-            <CategoriesTable :categories="categories" @refetch="fetchData" />
+            <ReportsTable :reports="reports" @refetch="fetchData"/>
         </div>
     </div>
 </template>
 
-<script setup lang="ts">
-import CategoriesTable from "@/components/tables/CategoriesTable.vue";
-import "vue-awesome-paginate/dist/style.css";
-
+<script setup>
+import ReportsTable from "@/components/tables/ReportsTable.vue";
 import { $api } from "@/utils/api";
 import { onMounted } from "vue";
-import { ref } from "vue";
-const categories = ref(null);
-const error = ref(null);
-const currentPage = ref(1);
-const onClickHandler = (page) => {
-    console.log(page);
-};
-const fetchData = async () => {
-    try {
-        const response = await $api("/api/photo-reports/category");
-        categories.value = response.data;
-        console.log(response);
-    } catch (err) {
-        error.value = err;
-        console.log(error.value);
-    }
-};
 
+const reports = ref(null);
+
+async function fetchData() {
+    try {
+        const response = await $api("/api/photo-reports/all-reports");
+        reports.value = response.data;
+        console.log(reports.value)
+    } catch (err) {
+        throw new Error(err);
+    }
+}
 onMounted(() => {
     fetchData();
 });
 </script>
+
 <style lang="scss">
 .wrapper {
     background-color: #fbfbfb;
@@ -69,7 +63,6 @@ onMounted(() => {
         0 0 transparent,
         0 0 transparent;
 }
-
 .add-button {
     display: flex;
     align-items: center;

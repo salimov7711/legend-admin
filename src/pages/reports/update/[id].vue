@@ -1,49 +1,43 @@
 <template>
     <div class="wrapper">
-        <form @submit.prevent="creatCat">
+        <form @submit.prevent="handleUpdate">
             <div class="input-group">
                 <input
-                    v-model="category"
                     type="text"
                     class="rounded-input"
-                    placeholder="Введите название категории"
-                    required
+                    placeholder="Введите название отчета"
                 />
-                <button type="submit" class="rounded-button">Создать</button>
+
+                <button @click="submit" class="rounded-button">изменить</button>
             </div>
         </form>
     </div>
 </template>
 
 <script setup>
-import { useRouter, useRoute } from "vue-router";
-const category = ref("");
-const route = useRoute();
+import { onMounted } from "vue";
+import { useRoute, useRouter } from "vue-router";
 const router = useRouter();
-const message = ref("");
-async function creatCat() {
-    try {
-        const response = await $api("/api/photo-reports/category/store", {
-            method: "post",
-            body: { name: category.value },
-        });
-        if (response) {
-            message.value = response.message;
-            console.log(message.value);
-            router.go(-1);
-        }
-    } catch (err) {
-        message.value = err;
-    }
-}
+const route = useRoute();
+const report = ref(null);
+
+const fetchData = async () => {
+    const response = await $api("/api/photo-reports/report/" + route.params.id);
+    console.log(response);
+};
+
+onMounted(() => {
+    fetchData();
+});
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
 .input-group {
     display: flex;
     justify-content: center;
     gap: 0 20px;
 }
+
 .wrapper {
     background-color: #fbfbfb;
     border-radius: 6px;
@@ -55,7 +49,6 @@ async function creatCat() {
         0 0 transparent,
         0 0 transparent;
 }
-
 .rounded-input {
     width: 45%;
     padding: 10px 15px;
@@ -67,11 +60,7 @@ async function creatCat() {
 }
 
 .rounded-input:focus {
-    border-color: #7367f0;;
-}
-.rounded-button:disabled {
-    background-color: #66afe9;
-    cursor: not-allowed;
+    border-color: #7367f0;
 }
 .rounded-button {
     padding: 10px 20px;
@@ -94,6 +83,6 @@ async function creatCat() {
 }
 .rounded-button:focus {
     border-color: #66afe9;
-   box-shadow: 0 0 0 4px rgba(102, 175, 233, 0.5); /* Blue ring */
+    box-shadow: 0 0 0 4px rgba(102, 175, 233, 0.5); /* Blue ring */
 }
 </style>
