@@ -9,4 +9,5 @@ export default [
     to: { name: 'second-page' },
     icon: { icon: 'tabler-file' },
   },
+ 
 ]
