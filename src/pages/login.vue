@@ -1,26 +1,58 @@
 <script setup>
-import AuthProvider from '@/views/pages/authentication/AuthProvider.vue'
-import { useGenerateImageVariant } from '@core/composable/useGenerateImageVariant'
-import authV2LoginIllustrationBorderedDark from '@images/pages/auth-v2-login-illustration-bordered-dark.png'
-import authV2LoginIllustrationBorderedLight from '@images/pages/auth-v2-login-illustration-bordered-light.png'
-import authV2LoginIllustrationDark from '@images/pages/auth-v2-login-illustration-dark.png'
-import authV2LoginIllustrationLight from '@images/pages/auth-v2-login-illustration-light.png'
-import authV2MaskDark from '@images/pages/misc-mask-dark.png'
-import authV2MaskLight from '@images/pages/misc-mask-light.png'
-import { VNodeRenderer } from '@layouts/components/VNodeRenderer'
-import { themeConfig } from '@themeConfig'
+import { useCookie } from "@/@core/composable/useCookie";
+import { router } from "@/plugins/1.router";
+import AuthProvider from "@/views/pages/authentication/AuthProvider.vue";
+import { subject } from "@casl/ability";
+import { useAbility } from "@casl/vue";
+import { useGenerateImageVariant } from "@core/composable/useGenerateImageVariant";
+import authV2LoginIllustrationBorderedDark from "@images/pages/auth-v2-login-illustration-bordered-dark.png";
+import authV2LoginIllustrationBorderedLight from "@images/pages/auth-v2-login-illustration-bordered-light.png";
+import authV2LoginIllustrationDark from "@images/pages/auth-v2-login-illustration-dark.png";
+import authV2LoginIllustrationLight from "@images/pages/auth-v2-login-illustration-light.png";
+import authV2MaskDark from "@images/pages/misc-mask-dark.png";
+import authV2MaskLight from "@images/pages/misc-mask-light.png";
+import { VNodeRenderer } from "@layouts/components/VNodeRenderer";
+import { themeConfig } from "@themeConfig";
 
-definePage({ meta: { layout: 'blank' } })
+definePage({ meta: { layout: "blank" } });
 
 const form = ref({
-  email: '',
-  password: '',
+  email: "",
+  password: "",
   remember: false,
-})
+});
 
-const isPasswordVisible = ref(false)
-const authThemeImg = useGenerateImageVariant(authV2LoginIllustrationLight, authV2LoginIllustrationDark, authV2LoginIllustrationBorderedLight, authV2LoginIllustrationBorderedDark, true)
-const authThemeMask = useGenerateImageVariant(authV2MaskLight, authV2MaskDark)
+async function login() {
+  try {
+    const response = await $api("/api/photo-reports/login", {
+      method: "post",
+      body: form.value,
+    });
+    const userAbilities = [
+      {
+        action: "read",
+        subject: "Admin",
+      },
+    ];
+
+      // localStorage.setItem('token', response.access_token);
+    useCookie('accessToken').value = response.access_token
+
+    router.push('/');
+  } catch (error) {
+    console.log(error.data);
+  }
+}
+
+const isPasswordVisible = ref(false);
+const authThemeImg = useGenerateImageVariant(
+  authV2LoginIllustrationLight,
+  authV2LoginIllustrationDark,
+  authV2LoginIllustrationBorderedLight,
+  authV2LoginIllustrationBorderedDark,
+  true
+);
+const authThemeMask = useGenerateImageVariant(authV2MaskLight, authV2MaskDark);
 </script>
 
 <template>
@@ -33,15 +65,9 @@ const authThemeMask = useGenerateImageVariant(authV2MaskLight, authV2MaskDark)
     </div>
   </RouterLink>
 
-  <VRow
-    no-gutters
-    class="auth-wrapper bg-surface"
-  >
-    <VCol
-      md="8"
-      class="d-none d-md-flex"
-    >
-      <div class="position-relative bg-background w-100 me-0">
+  <VRow no-gutters class="auth-wrapper bg-surface">
+    <VCol md="8" class="d-none d-md-flex overflow-hidden">
+      <!-- <div class="position-relative bg-background w-100 me-0">
         <div
           class="d-flex align-center justify-center w-100 h-100"
           style="padding-inline: 6.25rem;"
@@ -60,42 +86,49 @@ const authThemeMask = useGenerateImageVariant(authV2MaskLight, authV2MaskDark)
           height="280"
           width="100"
         >
+      </div> -->
+
+      <div class="position-relative">
+        <img src="/public/images/2.png" alt="" class="img" />
       </div>
     </VCol>
+
+    <div></div>
 
     <VCol
       cols="12"
       md="4"
       class="auth-card-v2 d-flex align-center justify-center"
     >
-      <VCard
-        flat
-        :max-width="500"
-        class="mt-12 mt-sm-0 pa-4"
-      >
-        <VCardText>
+      <VCard flat :max-width="500" class="mt-12 mt-sm-0 pa-4">
+        <!-- <VCardText>
           <h4 class="text-h4 mb-1">
             Welcome to <span class="text-capitalize"> {{ themeConfig.app.title }} </span>! 👋🏻
           </h4>
           <p class="mb-0">
             Please sign-in to your account and start the adventure
           </p>
-        </VCardText>
+        </VCardText> -->
         <VCardText>
-          <VAlert
-            color="primary"
-            variant="tonal"
-          >
+          <VAlert color="primary" variant="tonal">
             <p class="text-sm mb-2">
-              Admin Email: <strong>admin@demo.com</strong> / Pass: <strong>admin</strong>
+              Admin Email: <strong>admin@demo.com</strong> / Pass:
+              <strong>admin</strong>
             </p>
             <p class="text-sm mb-0">
-              Client Email: <strong>client@demo.com</strong> / Pass: <strong>client</strong>
+              Client Email: <strong>client@demo.com</strong> / Pass:
+              <strong>client</strong>
             </p>
           </VAlert>
         </VCardText>
         <VCardText>
-          <VForm @submit.prevent="() => { }">
+          <VForm
+            @submit.prevent="
+              () => {
+                login();
+              }
+            "
+          >
             <VRow>
               <!-- email -->
               <VCol cols="12">
@@ -115,33 +148,26 @@ const authThemeMask = useGenerateImageVariant(authV2MaskLight, authV2MaskDark)
                   label="Password"
                   placeholder="············"
                   :type="isPasswordVisible ? 'text' : 'password'"
-                  :append-inner-icon="isPasswordVisible ? 'tabler-eye-off' : 'tabler-eye'"
+                  :append-inner-icon="
+                    isPasswordVisible ? 'tabler-eye-off' : 'tabler-eye'
+                  "
                   @click:append-inner="isPasswordVisible = !isPasswordVisible"
                 />
 
-                <div class="d-flex align-center flex-wrap justify-space-between mt-2 mb-4">
-                  <VCheckbox
-                    v-model="form.remember"
-                    label="Remember me"
-                  />
-                  <a
-                    class="text-primary ms-2 mb-1"
-                    href="#"
-                  >
+                <div
+                  class="d-flex align-center flex-wrap justify-space-between mt-2 mb-4"
+                >
+                  <VCheckbox v-model="form.remember" label="Remember me" />
+                  <a class="text-primary ms-2 mb-1" href="#">
                     Forgot Password?
                   </a>
                 </div>
 
-                <VBtn
-                  block
-                  type="submit"
-                >
-                  Login
-                </VBtn>
+                <VBtn block type="submit"> Login </VBtn>
               </VCol>
 
               <!-- create account -->
-              <VCol
+              <!-- <VCol
                 cols="12"
                 class="text-center"
               >
@@ -153,23 +179,23 @@ const authThemeMask = useGenerateImageVariant(authV2MaskLight, authV2MaskDark)
                 >
                   Create an account
                 </a>
-              </VCol>
-              <VCol
+              </VCol> -->
+              <!-- <VCol
                 cols="12"
                 class="d-flex align-center"
               >
                 <VDivider />
                 <span class="mx-4">or</span>
                 <VDivider />
-              </VCol>
+              </VCol> -->
 
               <!-- auth providers -->
-              <VCol
+              <!-- <VCol
                 cols="12"
                 class="text-center"
               >
                 <AuthProvider />
-              </VCol>
+              </VCol> -->
             </VRow>
           </VForm>
         </VCardText>
@@ -180,4 +206,9 @@ const authThemeMask = useGenerateImageVariant(authV2MaskLight, authV2MaskDark)
 
 <style lang="scss">
 @use "@core/scss/template/pages/page-auth.scss";
+
+.img {
+  object-fit: cover;
+  width: 100%;
+}
 </style>

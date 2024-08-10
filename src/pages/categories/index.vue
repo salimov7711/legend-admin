@@ -46,7 +46,6 @@ const fetchData = async () => {
     try {
         const response = await $api("/api/photo-reports/category");
         categories.value = response.data;
-        console.log(response);
     } catch (err) {
         error.value = err;
         console.log(error.value);

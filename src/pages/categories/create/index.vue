@@ -16,6 +16,13 @@
 </template>
 
 <script setup>
+
+definePage({ 
+  meta: {
+    action: 'read',
+    subject: 'Admin',
+  },
+})
 import { useRouter, useRoute } from "vue-router";
 const category = ref("");
 const route = useRoute();
@@ -67,7 +74,7 @@ async function creatCat() {
 }
 
 .rounded-input:focus {
-    border-color: #7367f0;;
+    border-color: #7367f0;
 }
 .rounded-button:disabled {
     background-color: #66afe9;
@@ -94,6 +101,6 @@ async function creatCat() {
 }
 .rounded-button:focus {
     border-color: #66afe9;
-   box-shadow: 0 0 0 4px rgba(102, 175, 233, 0.5); /* Blue ring */
+    box-shadow: 0 0 0 4px rgba(102, 175, 233, 0.5); /* Blue ring */
 }
 </style>

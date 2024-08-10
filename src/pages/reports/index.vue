@@ -3,7 +3,7 @@
         <div class="page-header">
             <h1>Все отчеты</h1>
 
-            <RouterLink :to="`categories/create`">
+            <RouterLink :to="`/reports/create`">
                 <button class="add-button">
                     <svg
                         xmlns="http://www.w3.org/2000/svg"
@@ -41,7 +41,6 @@ async function fetchData() {
     try {
         const response = await $api("/api/photo-reports/all-reports");
         reports.value = response.data;
-        console.log(reports.value)
     } catch (err) {
         throw new Error(err);
     }

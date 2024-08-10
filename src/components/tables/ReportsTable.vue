@@ -30,43 +30,42 @@
                     <td>{{ formatDate(report.created_at) }}</td>
                     <td>
                         <div class="button-wrapper">
-                        <RouterLink :to="`/reports/update/${report.id}`">
-                        <button class="eye-button">
-                            <svg
-                                width="16"
-                                height="16"
-                                viewBox="0 0 16 16"
-                                fill="none"
-                                stroke="#ff5a1f"
-                                xmlns="http://www.w3.org/2000/svg"
-                            >
-                                <g clip-path="url(#clip0_18269_3133)">
-                                    <path
-                                        d="M6.6665 8.00033C6.6665 8.35395 6.80698 8.69309 7.05703 8.94313C7.30708 9.19318 7.64622 9.33366 7.99984 9.33366C8.35346 9.33366 8.6926 9.19318 8.94265 8.94313C9.19269 8.69309 9.33317 8.35395 9.33317 8.00033C9.33317 7.6467 9.19269 7.30757 8.94265 7.05752C8.6926 6.80747 8.35346 6.66699 7.99984 6.66699C7.64622 6.66699 7.30708 6.80747 7.05703 7.05752C6.80698 7.30757 6.6665 7.6467 6.6665 8.00033Z"
+                            <RouterLink :to="`/reports/update/${report.id}`">
+                                <button class="eye-button">
+                                    <svg
+                                        width="16"
+                                        height="16"
+                                        viewBox="0 0 16 16"
                                         fill="none"
-                                        stroke-linecap="round"
-                                        stroke-linejoin="round"
-                                    ></path>
-                                    <path
-                                        d="M14 8C12.4 10.6667 10.4 12 8 12C5.6 12 3.6 10.6667 2 8C3.6 5.33333 5.6 4 8 4C10.4 4 12.4 5.33333 14 8Z"
-                                        fill="none"
-                                        stroke-linecap="round"
-                                        stroke-linejoin="round"
-                                    ></path>
-                                </g>
-                                <defs>
-                                    <clipPath id="clip0_18269_3133">
-                                        <rect
-                                            width="16"
-                                            height="16"
-                                            fill="white"
-                                        ></rect>
-                                    </clipPath>
-                                </defs>
-                            </svg>
-                        </button>
-                        </RouterLink>
-
+                                        stroke="#ff5a1f"
+                                        xmlns="http://www.w3.org/2000/svg"
+                                    >
+                                        <g clip-path="url(#clip0_18269_3133)">
+                                            <path
+                                                d="M6.6665 8.00033C6.6665 8.35395 6.80698 8.69309 7.05703 8.94313C7.30708 9.19318 7.64622 9.33366 7.99984 9.33366C8.35346 9.33366 8.6926 9.19318 8.94265 8.94313C9.19269 8.69309 9.33317 8.35395 9.33317 8.00033C9.33317 7.6467 9.19269 7.30757 8.94265 7.05752C8.6926 6.80747 8.35346 6.66699 7.99984 6.66699C7.64622 6.66699 7.30708 6.80747 7.05703 7.05752C6.80698 7.30757 6.6665 7.6467 6.6665 8.00033Z"
+                                                fill="none"
+                                                stroke-linecap="round"
+                                                stroke-linejoin="round"
+                                            ></path>
+                                            <path
+                                                d="M14 8C12.4 10.6667 10.4 12 8 12C5.6 12 3.6 10.6667 2 8C3.6 5.33333 5.6 4 8 4C10.4 4 12.4 5.33333 14 8Z"
+                                                fill="none"
+                                                stroke-linecap="round"
+                                                stroke-linejoin="round"
+                                            ></path>
+                                        </g>
+                                        <defs>
+                                            <clipPath id="clip0_18269_3133">
+                                                <rect
+                                                    width="16"
+                                                    height="16"
+                                                    fill="white"
+                                                ></rect>
+                                            </clipPath>
+                                        </defs>
+                                    </svg>
+                                </button>
+                            </RouterLink>
 
                             <button
                                 @click="handleDelete(report.id)"
@@ -127,6 +126,22 @@
 
 <script setup>
 const emit = defineEmits(["refetch"]);
+import { ModalsContainer, useModal } from "vue-final-modal";
+import ErrorModal from "@/components/ErrorModal.vue";
+const { open, close } = useModal({
+    component: ErrorModal,
+    attrs: {
+        title: "Внимание !",
+        onConfirm() {
+          deleteReport();
+            close();
+        },
+        
+    },
+    slots: {
+        default: "<p>Вы уверены ?</p>",
+    },
+});
 const formatDate = (dateString) => {
     const options = {
         year: "numeric",
@@ -144,14 +159,22 @@ const props = defineProps({
     },
 });
 
+const selectedReportId = ref(null);
+
 async function handleDelete(id) {
-    const response = await $api("/api/photo-reports/report/delete/" + id, {
-        method: "delete",
-    });
-    if (response) {
-        console.log(response);
-        emit("refetch");
-    }
+    open();
+    selectedReportId.value = id;
+    
+}
+
+async function deleteReport() {
+  const response = await $api("/api/photo-reports/report/delete/" + selectedReportId.value, {
+      method: "delete",
+  });
+  if (response) {
+      console.log(response);
+      emit("refetch");
+  }
 }
 </script>
 

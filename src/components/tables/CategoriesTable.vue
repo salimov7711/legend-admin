@@ -54,7 +54,7 @@
                 </button>
               </RouterLink>
 
-              <button @click="removeCat(category.id)" class="delet-btn">
+              <button @click="handleDelete(category.id)" class="delet-btn">
                 <svg
                   width="16"
                   height="16"
@@ -112,7 +112,24 @@ const props = defineProps({
     default: () => [],
   },
 });
-const emit = defineEmits(['refetch'])
+
+import { ModalsContainer, useModal } from "vue-final-modal";
+import ErrorModal from "@/components/ErrorModal.vue";
+const { open, close } = useModal({
+    component: ErrorModal,
+    attrs: {
+        title: "Внимание !",
+        onConfirm() {
+          removeCat()
+            close();
+        },
+        
+    },
+    slots: {
+        default: "<p>Вы уверены ?</p>",
+    },
+});
+const emit = defineEmits(["refetch"]);
 const formatDate = (dateString) => {
   const options = {
     year: "numeric",
@@ -124,19 +141,24 @@ const formatDate = (dateString) => {
   return new Date(dateString).toLocaleDateString("ru-Ru", options);
 };
 
-async function removeCat(id) {
-  console.log(id);
+const catId = ref(null)
+async function removeCat() {
   try {
-    const response = await $api("/api/photo-reports/category/delete/" + id, {
+    const response = await $api("/api/photo-reports/category/delete/" + catId.value, {
       method: "delete",
     });
+
     
-    if(response) {
-      emit('refetch')
-    }
+      emit("refetch");
+    
   } catch {}
 }
 
+function handleDelete(id) {
+  open();
+
+  catId.value = id
+}
 onMounted(() => {
   console.log(props.categories);
 });
@@ -203,8 +225,4 @@ onMounted(() => {
   grid-gap: 20px;
   transition: background-color 150ms cubic-bezier(0.4, 0, 0.2, 1);
 }
-
-
-
-
 </style>

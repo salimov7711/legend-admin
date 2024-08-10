@@ -1,6 +1,6 @@
 <template>
     <div class="wrapper">
-        <form @submit.prevent="handleUpdate">
+        <form @submit.prevent="handleCreate">
             <div class="input-group">
                 <div class="title-group">
                     <label for="title" class="rounded-label">Назвавние</label>
@@ -49,6 +49,7 @@
                         id="file-input"
                         @change="handleFileChange"
                         ref="fileInput"
+                        name="file-input"
                     />
                     <label for="file-input" class="rounded-file-label">
                         {{ selectedFileName || "Выберите файл" }}
@@ -57,7 +58,7 @@
             </div>
 
             <div class="btn-wrapper">
-                <button type="submit" class="rounded-button">изменить</button>
+                <button type="submit" class="rounded-button">Создать</button>
             </div>
         </form>
     </div>
@@ -67,13 +68,10 @@
 import { ref } from "vue";
 import { onMounted } from "vue";
 import { useRoute, useRouter } from "vue-router";
+
+
 import { toast } from "vue3-toastify";
 import "vue3-toastify/dist/index.css";
-const router = useRouter();
-const route = useRoute();
-const report = ref({
-    title: "",
-});
 
 const notify = () => {
     toast.error(ErrorMessage.value, {
@@ -81,16 +79,20 @@ const notify = () => {
         position: toast.POSITION.TOP_CENTER,
     });
 };
+
+const router = useRouter();
+const route = useRoute();
+const report = ref({
+    title: "",
+    order: 0,
+    category_id: null,
+    image: null,
+});
 const options = ref([]);
 const selectedFileName = ref("");
 const fileInput = ref();
-const ErrorMessage = ref(null);
-const fileData = ref(undefined);
-const fetchData = async () => {
-    const response = await $api("/api/photo-reports/report/" + route.params.id);
-    report.value = response;
-    // console.log(report.value);
-};
+
+const ErrorMessage = ref(undefined);
 
 const fetchCategories = async () => {
     const response = await $api("/api/photo-reports/category/get-all");
@@ -102,7 +104,7 @@ function handleFileChange(e) {
     const file = e.target.files[0];
     selectedFileName.value = file.name;
     let reader = new FileReader();
-    fileData.value = file;
+    report.value.image = file;
 }
 
 function makeFormdata() {
@@ -110,8 +112,8 @@ function makeFormdata() {
     formdata.append("title", report.value.title);
     formdata.append("category_id", report.value.category_id);
     formdata.append("order", report.value.order);
-    if (fileData.value) {
-        formdata.append("image", fileData.value);
+    if (report.value.image) {
+        formdata.append("image", report.value.image);
     }
     for (const [key, value] of formdata.entries()) {
         console.log(key, value);
@@ -119,23 +121,20 @@ function makeFormdata() {
     return formdata;
 }
 
-async function handleUpdate() {
+async function handleCreate() {
+    console.log("create");
     try {
-        const response = await $api(
-            "/api/photo-reports/report/update/" + route.params.id,
-            {
-                method: "post",
-                body: makeFormdata(),
-            },
-        );
-        router.go(-1);
+        const response = await $api("/api/photo-reports/report/store/", {
+            method: "post",
+            body: makeFormdata(),
+        });
+      router.go(-1);
     } catch (err) {
-        ErrorMessage.value = err.data.message;
-        notify();
+        ErrorMessage.value = err.data.message
+        notify()
     }
 }
 onMounted(() => {
-    fetchData();
     fetchCategories();
 });
 </script>
