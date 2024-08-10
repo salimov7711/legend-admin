@@ -23,6 +23,16 @@ definePage({
     subject: 'Admin',
   },
 })
+
+import { toast } from "vue3-toastify";
+import "vue3-toastify/dist/index.css";
+
+const notify = () => {
+    toast.error(message.value, {
+        autoClose: 2000,
+        position: toast.POSITION.TOP_CENTER,
+    });
+};
 import { useRouter, useRoute } from "vue-router";
 const category = ref("");
 const route = useRoute();
@@ -40,7 +50,8 @@ async function creatCat() {
             router.go(-1);
         }
     } catch (err) {
-        message.value = err;
+        message.value = err.data.message;
+        notify()
     }
 }
 </script>
