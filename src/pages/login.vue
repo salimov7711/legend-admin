@@ -89,7 +89,7 @@ const authThemeMask = useGenerateImageVariant(authV2MaskLight, authV2MaskDark);
       </div> -->
 
       <div class="position-relative">
-        <img src="/public/images/2.png" alt="" class="img" />
+        <img src="/public/images/3.png" loading="lazy" alt="" class="img" />
       </div>
     </VCol>
 
@@ -210,5 +210,6 @@ const authThemeMask = useGenerateImageVariant(authV2MaskLight, authV2MaskDark);
 .img {
   object-fit: cover;
   width: 100%;
+  height: 100%;
 }
 </style>
