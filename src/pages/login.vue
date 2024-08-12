@@ -38,7 +38,7 @@ async function login() {
       // localStorage.setItem('token', response.access_token);
     useCookie('accessToken').value = response.access_token
 
-    router.push('/');
+    router.push('/categories');
   } catch (error) {
     console.log(error.data);
   }
@@ -110,7 +110,7 @@ const authThemeMask = useGenerateImageVariant(authV2MaskLight, authV2MaskDark);
           </p>
         </VCardText> -->
         <VCardText>
-          <VAlert color="primary" variant="tonal">
+          <!-- <VAlert color="primary" variant="tonal">
             <p class="text-sm mb-2">
               Admin Email: <strong>admin@demo.com</strong> / Pass:
               <strong>admin</strong>
@@ -119,7 +119,7 @@ const authThemeMask = useGenerateImageVariant(authV2MaskLight, authV2MaskDark);
               Client Email: <strong>client@demo.com</strong> / Pass:
               <strong>client</strong>
             </p>
-          </VAlert>
+          </VAlert> -->
         </VCardText>
         <VCardText>
           <VForm

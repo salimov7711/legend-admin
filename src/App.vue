@@ -18,22 +18,9 @@ const configStore = useConfigStore();
 const accessToken = useCookie("accessToken").value;
 
 onMounted(async () => {
-  // if (localStorage.getItem("token")) {
-  //   try {
-  //     const response = await $api("/api/photo-reports/getUser");
-
-  //     if (route.name == "login") {
-  //       router.push("/");
-  //     }
-  //   } catch (err) {
-  //     if (err.response && err.status === 401) {
-  //       router.push("/login");
-  //     }
-  //   }
-  // } else {
-  //   router.push("/login");
-  // }
+ 
   checkAuth()
+ 
 });
 
 async function checkAuth() {
@@ -42,7 +29,7 @@ async function checkAuth() {
     try {
       const response = await $api("/api/photo-reports/getUser");
       if (route.name === "login") {
-        router.push("/");
+        router.push("/categories");
       }
     } catch (err) {
       if (err.status === 401) {

@@ -25,6 +25,14 @@ const router = createRouter({
   ],
 })
 
+router.beforeEach((to, from, next) => {
+  if (to.name === 'root') {
+    // Redirect to another page or prevent access
+    next({ name: 'categories' }) // Redirects to '/other-page'
+  } else {
+    next() // Allow navigation to other routes
+  }
+})
 export { router }
 export default function (app) {
   app.use(router)
