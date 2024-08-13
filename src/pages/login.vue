@@ -13,7 +13,15 @@ import authV2MaskDark from "@images/pages/misc-mask-dark.png";
 import authV2MaskLight from "@images/pages/misc-mask-light.png";
 import { VNodeRenderer } from "@layouts/components/VNodeRenderer";
 import { themeConfig } from "@themeConfig";
+import { toast } from "vue3-toastify";
+import "vue3-toastify/dist/index.css";
 
+const notify = () => {
+    toast.error(messages.value, {
+        autoClose: 2000,
+        position: toast.POSITION.TOP_CENTER,
+    });
+};
 definePage({ meta: { layout: "blank" } });
 
 const form = ref({
@@ -22,6 +30,8 @@ const form = ref({
   remember: false,
 });
 
+
+const  messages = ref(null);
 async function login() {
   try {
     const response = await $api("/api/photo-reports/login", {
@@ -40,7 +50,9 @@ async function login() {
 
     router.push('/categories');
   } catch (error) {
-    console.log(error.data);
+    messages.value = error.data.message
+    notify()
+    console.log(error.data.message);
   }
 }
 
