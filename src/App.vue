@@ -32,7 +32,7 @@ async function checkAuth() {
         router.push("/categories");
       }
     } catch (err) {
-      if (err.status === 401) {
+      if (err.status === 401 || err.status === 403) {
         router.push("/login");
       }
     }
